@@ -315,9 +315,11 @@ class CrossprojectpipingExternalModule extends AbstractExternalModule
 
 	function processRecord($project_id, $record, $instrument, $event_id, $repeat_instance) {
 		// Do not run on new records with no record ID
+		/* // I want to do this on new records - Tintin
 		if(empty($record)) {
 			return;
-		}
+		}*/
+
 		if(!is_int($repeat_instance)) {
 			$repeat_instance = 1;
 		}
@@ -558,7 +560,14 @@ class CrossprojectpipingExternalModule extends AbstractExternalModule
 								var ajaxCountLimit = 0;
 								// console.log('++cppAjaxConnections = '+cppAjaxConnections);
 								
-								$.post(url, { thisrecord: '<?= htmlspecialchars($_GET['id'], ENT_QUOTES) ?>', thispid: <?= intval($_GET['pid']) ?>, thismatch: match[field]['params'], matchsource: matchSourceParam, getlabel: getLabel, otherpid: nodes[0], otherlogic: remaining, choices: JSON.stringify(choices) }, function(data) {
+								//check if thismatch exists on current page
+								var  matchElement = $('[name=' + match[field['params']] + ']');
+                                var thisValParam = null;
+                                if(matchElement.length && matchElement.val() != ""){
+                                    thisValParam = matchElement.val();
+                                }
+
+								$.post(url, { thisrecord: '<?= htmlspecialchars($_GET['id'], ENT_QUOTES) ?>', thispid: <?= intval($_GET['pid']) ?>, thismatch: match[field]['params'], thisvalue: thisValParam, matchsource: matchSourceParam, getlabel: getLabel, otherpid: nodes[0], otherlogic: remaining, choices: JSON.stringify(choices) }, function(data) {
 									if(data.length && typeof(data) == 'string' && data.indexOf('multiple browser tabs of the same REDCap page. If that is not the case') >= 0) {
 										if(ajaxCountLimit >= 1000) {
 											return;

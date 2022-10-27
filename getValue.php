@@ -10,15 +10,19 @@
 		\REDCap::allowProjects(array($_POST['otherpid'], $_POST['thispid']));
 	}
 
-	$thisjson = \REDCap::getData($_POST['thispid'], 'json', array($_POST['thisrecord']), array($_POST['thismatch'])); 
-	$thismatch = trim($_POST['thismatch']);
-	$thismatch = preg_replace("/^[\'\"]/", "", $thismatch);
-	$thismatch = preg_replace("/[\'\"]$/", "", $thismatch);
-	$thisdata = json_decode($thisjson, true);
-	$matchRecord = "";
-	foreach ($thisdata as $line) {
-		if ($line[$thismatch]) {
-			$matchRecord = $line[$thismatch];
+	if($_POST['thisvalue'] && $_POST['thisvalue'] != ""){
+		$matchRecord = $_POST['thisvalue'];
+	} else {
+		$thisjson = \REDCap::getData($_POST['thispid'], 'json', array($_POST['thisrecord']), array($_POST['thismatch'])); 
+		$thismatch = trim($_POST['thismatch']);
+		$thismatch = preg_replace("/^[\'\"]/", "", $thismatch);
+		$thismatch = preg_replace("/[\'\"]$/", "", $thismatch);
+		$thisdata = json_decode($thisjson, true);
+		$matchRecord = "";
+		foreach ($thisdata as $line) {
+			if ($line[$thismatch]) {
+				$matchRecord = $line[$thismatch];
+			}
 		}
 	}
 
